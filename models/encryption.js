@@ -32,7 +32,11 @@ class Encryption {
                 if(err){
                     reject(err)
                 }else{
-                    resolve(key.toString("hex"));
+                    let result ={
+                        salt : salt,
+                        password : key.toString("hex")
+                    }
+                    resolve(result);
                 }
             })
         })
