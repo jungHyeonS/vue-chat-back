@@ -1,4 +1,6 @@
 var Auth = require("../models/auth");
+
+//회원가입 컨트롤러
 exports.join = async function (req, res) {
     let input = req.body;
     const auth = new Auth();
@@ -14,6 +16,8 @@ exports.join = async function (req, res) {
     res.json(result);
 }
 
+
+//로그인 컨트롤러
 exports.login = async function(req,res){
     let result = {
         err : 0,
