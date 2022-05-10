@@ -41,5 +41,30 @@ class Encryption {
             })
         })
     }
+
+    async checkPassword(inputPass,salt,userPass){
+        return new Promise((resolve,reject)=>{
+            crypto.pbkdf2(inputPass,salt,100,64,"sha512",(err,key)=>{
+                if(err){
+                    reject(err);
+                }else{
+                    let result = {
+                        err : 0
+                    }
+                    if(key.toString("hex") === userPass){
+                        resolve(result)
+                    }else{
+                        result.err = 101;
+                        reject(result);
+                    }
+                    // else{
+                    //     reject(0);
+                    // }
+                }
+            });
+        })
+        
+        
+    }
 }
 module.exports = Encryption;
