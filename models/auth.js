@@ -29,51 +29,43 @@ class Auth {
     }
 
 
+    /**
+     * @description 로그인
+     * @param {*} param 
+     * @returns checkPass
+     */
     async login(param){
         let encry = new Encryption();
-        let reulst = await encry.checkPassword("aa","bb","ss");
-        // try{
-        //     const sql = "select id,password,salt from user where id = ?";
-        //     mysql.query(sql,[param.id],(err,rows,fields)=>{
-        //         if(err){
-        //             reject(err);
-        //         }else{
-        //             let dataList = [];
-        //             for (let data of rows){
-        //                 dataList.push({
-        //                     id : data.id,
-        //                     pass : data.password,
-        //                     salt : data.salt
-        //                 });
-        //             };
-        //             let reulst = await encry.checkPassword(param.pass,dataList[0].salt,dataList[0].pass);
-        //         }
-        //     });
-        // }catch(err){
-        //     console.log(err);
-        // }
-        // return new Promise((resolve,reject)=>{
-        //     const sql = "select id,password,salt from user where id = ?";
-        //     mysql.query(sql,[param.id],(err,rows,fields)=>{
-        //         if(err){
-        //             reject(err);
-        //         }else{
-        //             let dataList = [];
-        //             for (let data of rows){
-        //                 dataList.push({
-        //                     id : data.id,
-        //                     pass : data.password,
-        //                     salt : data.salt
-        //                 });
-        //             };
-        //             encry.checkPassword(param.pass,dataList[0].salt,dataList[0].pass).then((res)=>{
-        //                 resolve(res);
-        //             })
-                    
-        //         }
-        //     })
-        // })
-        
+        return new Promise((resolve,reject)=>{
+            try{
+                const sql = "select id,password,salt from user where id = ?";
+                mysql.query(sql,[param.id],async (err,rows,fields)=>{
+                    if(err){
+                        reject(err);
+                    }else{
+                        let dataList = [];
+                        for (let data of rows){
+                            dataList.push({
+                                id : data.id,
+                                pass : data.password,
+                                salt : data.salt
+                            });
+                        };
+                        let hasspass = await encry.checkPassword(param.pass,dataList[0].salt,);
+
+                        let checkPass = false;
+                        if(dataList[0].pass === hasspass){
+                            checkPass = true;
+                        }else{
+                            checkPass = false
+                        }
+                        resolve(checkPass)
+                    }
+                });
+            }catch(err){
+                console.log(err);
+            }
+        })
     }
 }
 module.exports = Auth;

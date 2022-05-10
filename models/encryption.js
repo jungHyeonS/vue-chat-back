@@ -42,29 +42,24 @@ class Encryption {
         })
     }
 
-    async checkPassword(inputPass,salt,userPass){
+
+
+    /**
+     * @description 로그인 패스워드 암호화
+     * @param {*} inputPass 
+     * @param {*} salt 
+     * @returns hash password
+     */
+    async checkPassword(inputPass,salt){
         return new Promise((resolve,reject)=>{
             crypto.pbkdf2(inputPass,salt,100,64,"sha512",(err,key)=>{
                 if(err){
                     reject(err);
                 }else{
-                    let result = {
-                        err : 0
-                    }
-                    if(key.toString("hex") === userPass){
-                        resolve(result)
-                    }else{
-                        result.err = 101;
-                        reject(result);
-                    }
-                    // else{
-                    //     reject(0);
-                    // }
+                    resolve(key.toString("hex"))
                 }
             });
         })
-        
-        
     }
 }
 module.exports = Encryption;
