@@ -1,5 +1,6 @@
 const mysql = require("../config/db");
 const Encryption = require("./encryption");
+const Jwt = require("./jwt")
 class Auth {
     
     constructor() {
@@ -36,13 +37,14 @@ class Auth {
      */
     async login(param){
         let encry = new Encryption();
+        const jwtToken = new Jwt();
         let result = {
             err : 0,
             errMsg : ""
         }
         return new Promise((resolve,reject)=>{
             try{
-                const sql = "select id,password,salt from user where id = ?";
+                const sql = "select id,password,salt,nickname from user where id = ?";
                 mysql.query(sql,[param.id],async (err,rows,fields)=>{
                     if(err){
                         reject(err);
@@ -50,9 +52,9 @@ class Auth {
                         // console.log(rows.length);
                         if(rows.length){
                             let hasspass = await encry.checkPassword(param.pass,rows[0].salt);
-                            let checkPass = false;
                             if(rows[0].password === hasspass){
                                 result.err = 0;
+                                result.accessToken = await jwtToken.tokenSign(rows[0].id,rows[0].nickname);
                             }else{
                                 result.err = 101;
                                 result.errMsg = "비밀번호를 확인해주세요";
