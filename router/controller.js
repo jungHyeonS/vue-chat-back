@@ -25,3 +25,9 @@ exports.login = async function(req,res){
     let loginResult = await auth.login(input); 
     res.json(loginResult);
 }
+
+//방리스트
+exports.roomList = async function(req,res){
+    console.log("roomList");
+    res.end("abc");
+}

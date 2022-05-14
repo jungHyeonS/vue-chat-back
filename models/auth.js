@@ -44,7 +44,7 @@ class Auth {
         }
         return new Promise((resolve,reject)=>{
             try{
-                const sql = "select id,password,salt,nickname from user where id = ?";
+                const sql = "select idx,id,password,salt,nickname from user where id = ?";
                 mysql.query(sql,[param.id],async (err,rows,fields)=>{
                     if(err){
                         reject(err);
@@ -54,7 +54,7 @@ class Auth {
                             let hasspass = await encry.checkPassword(param.pass,rows[0].salt);
                             if(rows[0].password === hasspass){
                                 result.err = 0;
-                                result.accessToken = await jwtToken.tokenSign(rows[0].id,rows[0].nickname);
+                                result.accessToken = await jwtToken.tokenSign(rows[0].idx,rows[0].id,rows[0].nickname);
                             }else{
                                 result.err = 101;
                                 result.errMsg = "비밀번호를 확인해주세요";

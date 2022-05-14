@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const cors = require('cors');
+require("dotenv").config();
 app.use(express.json()); //json 형태로 parsing
 app.use(express.urlencoded( {extended : false } )); 
 app.use(cors());
