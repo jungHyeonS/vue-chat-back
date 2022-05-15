@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-// const secretKey = require("../config/jwt_key").secretKey;
 const option = require("../config/jwt_key").option
 class Jwt{
     constructor(){
