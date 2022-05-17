@@ -10,6 +10,7 @@ const verify = {
             const bearer = headerToken.split(" ");
             const token = bearer[1];
             let verify = await jwtToken.verify(token);
+            console.log(verify);
             if(verify == 1){
                 return res.status(400).json({status: 400, message: "token expired"})
             }else if(verify == 2){
@@ -17,6 +18,7 @@ const verify = {
             }else if(verify.idx === undefined){
                 return res.status(400).json({status: 400, message: "invalid token"})
             }
+            req.token = verify;
             next();
         }
     }

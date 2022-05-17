@@ -1,4 +1,5 @@
 var Auth = require("../models/auth");
+let Room = require("../models/room")
 
 //회원가입 컨트롤러
 exports.join = async function (req, res) {
@@ -30,4 +31,17 @@ exports.login = async function(req,res){
 exports.roomList = async function(req,res){
     console.log("roomList");
     res.end("abc");
+}
+
+//방생성
+exports.addRoom = async function(req,res){
+    let input = req.body;
+    const token = req.token;
+    input.userIdx = token.idx
+    const room = new Room();
+    let addRoomResult = await room.addRoom(input);
+    res.json(addRoomResult);
+    // console.log("addRoomInput",input)
+    // console.log("addRoomToken",token);
+
 }
