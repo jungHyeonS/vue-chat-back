@@ -27,12 +27,6 @@ exports.login = async function(req,res){
     res.json(loginResult);
 }
 
-//방리스트
-exports.roomList = async function(req,res){
-    console.log("roomList");
-    res.end("abc");
-}
-
 //방생성
 exports.addRoom = async function(req,res){
     let input = req.body;
@@ -41,7 +35,11 @@ exports.addRoom = async function(req,res){
     const room = new Room();
     let addRoomResult = await room.addRoom(input);
     res.json(addRoomResult);
-    // console.log("addRoomInput",input)
-    // console.log("addRoomToken",token);
+}
 
+//방 리스트
+exports.roomList = async function(req,res){
+    const room = new Room();
+    let roomList = await room.roomList();
+    res.json(roomList);
 }

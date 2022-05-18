@@ -5,6 +5,12 @@ class Room{
     }
 
 
+
+    /**
+     * @description 방생성
+     * @param {*} params 
+     * @returns result
+     */
     async addRoom(params){
         let result = {
             err : 0,
@@ -20,6 +26,25 @@ class Room{
                     resolve(result)
                 }
             })
+        })
+    }
+
+    async roomList(){
+        let result = {
+            err : 0,
+            errMsg : "",
+            list : []
+        }
+        return new Promise((resolve,reject)=>{
+            const sql = "select idx,roomName,createIdx,createDate from room where isDel = 'N'"
+            mysql.query(sql,[],async (err,rows,fields)=>{
+                if(err){
+                    reject(err)
+                }else{
+                    result.list = rows;
+                    resolve(result)
+                }
+            });
         })
     }
 }
