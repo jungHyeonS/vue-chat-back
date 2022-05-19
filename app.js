@@ -30,12 +30,9 @@ io.on('connection', (socket) => {
     console.log('a user connected');
 
     socket.on("roomList",async (data)=>{
-        console.log("roomList",data);
         const room = new Room();
-        let roomList = await room.roomList();
-        console.log(roomList);
-        // console.log(socket.id);
-        socket.emit("sendRoomList",{
+        let roomList = await room.roomList(data.roomName);
+        io.to(socket.id).emit("sendRoomList",{
             list : roomList.list
         })
     })
