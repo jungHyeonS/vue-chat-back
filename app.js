@@ -26,6 +26,8 @@ const io = require("socket.io")(server, {
 });
 
 
+let socketToRoom = {};
+
 io.on('connection', (socket) => {
     console.log('a user connected');
 
@@ -36,6 +38,17 @@ io.on('connection', (socket) => {
             list : roomList.list
         })
     })
+
+    socket.on("joinRoom",async (data)=>{
+        if(socketToRoom[data.roomIdx]){
+            socketToRoom[data.roomIdx].push({socket : socket.id})
+        }else{
+            socketToRoom[data.roomIdx] = [
+                {socket : socket.id}
+            ]
+        }
+        console.log(socketToRoom)
+    });
 });
 
 
