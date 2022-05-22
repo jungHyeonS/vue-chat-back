@@ -29,6 +29,11 @@ class Room{
         })
     }
 
+    /**
+     * @description 방 리스트
+     * @param {*} roomName 
+     * @returns 
+     */
     async roomList(roomName){
         let result = {
             err : 0,

@@ -54,6 +54,7 @@ class Auth {
                             let hasspass = await encry.checkPassword(param.pass,rows[0].salt);
                             if(rows[0].password === hasspass){
                                 result.err = 0;
+                                result.userIdx = rows[0].idx
                                 result.accessToken = await jwtToken.tokenSign(rows[0].idx,rows[0].id,rows[0].nickname);
                             }else{
                                 result.err = 101;
