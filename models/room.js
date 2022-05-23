@@ -60,5 +60,42 @@ class Room{
             });
         })
     }
+
+    isRoomCheck(roomIdx,userIdx){
+        return new Promise((resolve,reject)=>{
+            const sql = `select riu.isQuit  from roomIsUser riu where riu.roomIdx = ? and userIdx = ?`
+            let param = [roomIdx,userIdx]
+            console.log(param);
+            mysql.query(sql,param,async (err,rows,fields)=>{
+                if(err){
+                    reject(err);
+                }else{
+                    await this.replaceRoomIsUser(roomIdx,userIdx,"N")
+                    // console.log(rows);
+                    // let isQuit = "N";
+                    // if(!rows.length){
+                    //     isQuit = "N"
+                    // }else{
+                    //     if(rows[0].isQuit == "Y"){
+                    //         isQuit = "N"
+                    //     }
+                    // }
+                }
+            })
+        })
+    }
+    replaceRoomIsUser(roomIdx,userIdx,isQuit){
+        return new Promise((resolve,reject)=>{
+            const sql = "replace into roomIsUser set roomIdx = ?, userIdx = ?, isQuit = ?";
+            let param = [roomIdx,userIdx,isQuit]
+            mysql.query(sql,param,(err,rows,fiedls)=>{
+                if(err){
+                    reject(0)
+                }else{
+                    console.log(rows.insertId)
+                }
+            })
+        })
+    }
 }
 module.exports = Room;

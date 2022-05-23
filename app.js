@@ -55,6 +55,11 @@ io.on('connection', (socket) => {
                 {socket : socket.id}
             ]
         }
+
+        const room = new Room();
+        room.isRoomCheck(data.roomIdx,data.userIdx)
+
+
         socket.join(data.roomIdx.toString())
         io.to(socket.id).emit("joinRoomSuccess",{
             roomIdx : data.roomIdx
