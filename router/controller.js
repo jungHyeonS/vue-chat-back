@@ -1,5 +1,6 @@
 var Auth = require("../models/auth");
 let Room = require("../models/room")
+let Chat = require("../models/chat")
 
 //회원가입 컨트롤러
 exports.join = async function (req, res) {
@@ -42,4 +43,17 @@ exports.roomList = async function(req,res){
     const room = new Room();
     let roomList = await room.roomList();
     res.json(roomList);
+}
+
+//채팅 리스트
+exports.chatList = async function(req,res){
+    let roomIdx = req.params.roomIdx
+    const chat = new Chat();
+    let chatList = await chat.chatList(roomIdx);
+    let result = {
+        err : 0,
+        errMsg : "",
+        list : chatList
+    }
+    res.json(result)
 }

@@ -32,6 +32,9 @@ let socketToRoom = {};
 io.on('connection', (socket) => {
     console.log('a user connected');
 
+    /**
+     * @description 방 리스트 소켓
+     */
     socket.on("roomList",async (data)=>{
         const room = new Room();
         let roomList = await room.roomList(data.roomName);
@@ -40,6 +43,10 @@ io.on('connection', (socket) => {
         })
     })
 
+
+    /**
+     * @description 방 입장 소켓
+     */
     socket.on("joinRoom",async (data)=>{
         if(socketToRoom[data.roomIdx]){
             socketToRoom[data.roomIdx].push({socket : socket.id})
@@ -54,6 +61,10 @@ io.on('connection', (socket) => {
         })
     });
 
+
+    /**
+     * @description 메세지 전송 소켓
+     */
     socket.on("sendMessage", async (data)=>{
         let input = data.input;
         input.userSocket = socket.id;
