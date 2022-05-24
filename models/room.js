@@ -61,38 +61,67 @@ class Room{
         })
     }
 
+
+    /**
+     * @description 선택한 방 에 로그인한 유저가 있는지 없는지 체크
+     * @param {int} roomIdx 
+     * @param {int} userIdx 
+     * @returns 
+     */
     isRoomCheck(roomIdx,userIdx){
         return new Promise((resolve,reject)=>{
-            const sql = `select riu.isQuit  from roomIsUser riu where riu.roomIdx = ? and userIdx = ?`
+            const sql = `select riu.idx,riu.isQuit  from roomIsUser riu where riu.roomIdx = ? and userIdx = ?`
             let param = [roomIdx,userIdx]
             console.log(param);
             mysql.query(sql,param,async (err,rows,fields)=>{
                 if(err){
                     reject(err);
                 }else{
-                    await this.replaceRoomIsUser(roomIdx,userIdx,"N")
-                    // console.log(rows);
-                    // let isQuit = "N";
-                    // if(!rows.length){
-                    //     isQuit = "N"
-                    // }else{
-                    //     if(rows[0].isQuit == "Y"){
-                    //         isQuit = "N"
-                    //     }
-                    // }
+                    // console.log("rows",rows.idx);
+                    let result = {
+                        isJoin : "Y"
+                    }
+                    if(!rows.length){
+                        await this.replaceRoomIsUser(0,roomIdx,userIdx,"N")
+                    }else{
+                        if(rows[0].isQuit == "Y"){
+                            await this.replaceRoomIsUser(rows[0].idx,roomIdx,userIdx,"N")
+                        }else{
+                            result.isJoin = "N";
+                        }
+                    }
+                    resolve(result)
                 }
             })
         })
     }
-    replaceRoomIsUser(roomIdx,userIdx,isQuit){
+
+
+    /**
+     * @description 방 접속 여부에 따라 데이터 업데이트
+     * @param {int} idx 
+     * @param {int} roomIdx 
+     * @param {int} userIdx 
+     * @param {char} isQuit 
+     * @returns 
+     */
+    replaceRoomIsUser(idx,roomIdx,userIdx,isQuit){
         return new Promise((resolve,reject)=>{
-            const sql = "replace into roomIsUser set roomIdx = ?, userIdx = ?, isQuit = ?";
-            let param = [roomIdx,userIdx,isQuit]
+            let param = []
+            let sql = "";
+            if(idx === undefined){
+                sql = "replace into roomIsUser set roomIdx = ?, userIdx = ?, isQuit = ?";
+                param = [roomIdx,userIdx,isQuit]    
+            }else{
+                sql = "replace into roomIsUser set idx = ? , roomIdx = ?, userIdx = ?, isQuit = ?";
+                param = [idx,roomIdx,userIdx,isQuit]    
+            }
+            
             mysql.query(sql,param,(err,rows,fiedls)=>{
                 if(err){
                     reject(0)
                 }else{
-                    console.log(rows.insertId)
+                    resolve(rows.insertId)
                 }
             })
         })

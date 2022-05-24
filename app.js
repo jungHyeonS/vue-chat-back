@@ -14,6 +14,7 @@ app.use(routes) // use 는 경로에 대한 확장성을 의미한다.
 
 let Room = require("./models/room")
 let Chat = require("./models/chat")
+let Common = require("./models/common");
 
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
@@ -57,12 +58,18 @@ io.on('connection', (socket) => {
         }
 
         const room = new Room();
-        room.isRoomCheck(data.roomIdx,data.userIdx)
-
+        const common = new Common();
+        let isRoomCheck = await room.isRoomCheck(data.roomIdx,data.userIdx)
+        let user = await common.findByUser(data.userIdx);
+        isRoomCheck.user = user;
+        console.log("isRoomCheck",isRoomCheck);
 
         socket.join(data.roomIdx.toString())
         io.to(socket.id).emit("joinRoomSuccess",{
             roomIdx : data.roomIdx
+        })
+        io.sockets.in(data.roomIdx.toString()).emit("joinOtherUser",{
+            isRoomCheck : isRoomCheck
         })
     });
 
