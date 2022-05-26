@@ -1,4 +1,5 @@
 const mysql = require("../config/db");
+const moment = require('moment');
 class Room{
     constructor(){
 
@@ -113,8 +114,9 @@ class Room{
                 sql = "replace into roomIsUser set roomIdx = ?, userIdx = ?, isQuit = ?";
                 param = [roomIdx,userIdx,isQuit]    
             }else{
-                sql = "replace into roomIsUser set idx = ? , roomIdx = ?, userIdx = ?, isQuit = ?";
-                param = [idx,roomIdx,userIdx,isQuit]    
+                let today = moment().format("YYYY-MM-DD HH:mm:ss")
+                sql = "replace into roomIsUser set idx = ? , roomIdx = ?, userIdx = ?, isQuit = ?, updateDate = ?";
+                param = [idx,roomIdx,userIdx,isQuit,today]    
             }
             
             mysql.query(sql,param,(err,rows,fiedls)=>{
