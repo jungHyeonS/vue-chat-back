@@ -68,11 +68,21 @@ io.on('connection', (socket) => {
         })
 
         let chatList = await chat.chatList(data.roomIdx);
-        console.log("chatList",chatList)
         io.sockets.in(data.roomIdx.toString()).emit("getChatList",{
             chatList : chatList
         })
       
+    });
+
+    socket.on("outRoom",async (data)=>{
+        // console.log("outRoom",socketToRoom[data.roomIdx])
+
+        let index = socketToRoom[data.roomIdx].findIndex((item) => item.socket == socket.id);
+        console.log(index);
+        socketToRoom[data.roomIdx].splice(index,1);
+        socket.leave(data.roomIdx.toString())
+        // console.log(socketToRoom[data.roomIdx])
+
     });
 
 

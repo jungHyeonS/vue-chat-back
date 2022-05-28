@@ -105,6 +105,8 @@ class Room{
                             result.isJoin = "N";
                         }
                     }
+                    // await this.replaceRoomIsUser(0,roomIdx,userIdx,"N")
+                    // await chat.sendMessage(input,'Y')
                     resolve(result)
                 }
             })
