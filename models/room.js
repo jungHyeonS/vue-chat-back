@@ -1,5 +1,7 @@
 const mysql = require("../config/db");
 const moment = require('moment');
+const Common = require("./common");
+const Chat = require("./chat");
 class Room{
     constructor(){
 
@@ -69,7 +71,8 @@ class Room{
      * @param {int} userIdx 
      * @returns 
      */
-    isRoomCheck(roomIdx,userIdx){
+    isRoomCheck(roomIdx,userIdx,socket){
+        
         return new Promise((resolve,reject)=>{
             const sql = `select riu.idx,riu.isQuit  from roomIsUser riu where riu.roomIdx = ? and userIdx = ?`
             let param = [roomIdx,userIdx]
@@ -78,15 +81,26 @@ class Room{
                 if(err){
                     reject(err);
                 }else{
+                    const common = new Common();
+                    const chat = new Chat();
                     // console.log("rows",rows.idx);
                     let result = {
                         isJoin : "Y"
                     }
+                    let user = await common.findByUser(userIdx);
+                    let input = {
+                        roomIdx : roomIdx,
+                        content : `${user.nickname} 님이 입장하였습니다.`,
+                        userSocket : socket,
+                        userIdx : userIdx
+                    }
                     if(!rows.length){
                         await this.replaceRoomIsUser(0,roomIdx,userIdx,"N")
+                        await chat.sendMessage(input,'Y')
                     }else{
                         if(rows[0].isQuit == "Y"){
                             await this.replaceRoomIsUser(rows[0].idx,roomIdx,userIdx,"N")
+                            await chat.sendMessage(input,'Y')
                         }else{
                             result.isJoin = "N";
                         }
