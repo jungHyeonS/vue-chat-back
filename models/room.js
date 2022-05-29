@@ -71,7 +71,7 @@ class Room{
      * @param {int} userIdx 
      * @returns 
      */
-    isRoomCheck(roomIdx,userIdx,socket){
+    isRoomCheck(roomIdx,userIdx,socket,type){
         
         return new Promise((resolve,reject)=>{
             const sql = `select riu.idx,riu.isQuit  from roomIsUser riu where riu.roomIdx = ? and userIdx = ?`
@@ -83,7 +83,6 @@ class Room{
                 }else{
                     const common = new Common();
                     const chat = new Chat();
-                    // console.log("rows",rows.idx);
                     let result = {
                         isJoin : "Y"
                     }
@@ -102,11 +101,15 @@ class Room{
                             await this.replaceRoomIsUser(rows[0].idx,roomIdx,userIdx,"N")
                             await chat.sendMessage(input,'Y')
                         }else{
-                            result.isJoin = "N";
+                            if(type == "leave"){
+                                input.content = `${user.nickname} 님이 퇴장하였습니다.`;
+                                await this.replaceRoomIsUser(rows[0].idx,roomIdx,userIdx,"Y")
+                                await chat.sendMessage(input,'Y')
+                            }else{
+                                result.isJoin = "N";
+                            }
                         }
                     }
-                    // await this.replaceRoomIsUser(0,roomIdx,userIdx,"N")
-                    // await chat.sendMessage(input,'Y')
                     resolve(result)
                 }
             })

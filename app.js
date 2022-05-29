@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
         const room = new Room();
         const chat = new Chat();
         // const common = new Common();
-        await room.isRoomCheck(data.roomIdx,data.userIdx,socket.id)
+        await room.isRoomCheck(data.roomIdx,data.userIdx,socket.id,"join")
 
         socket.join(data.roomIdx.toString())
         io.to(socket.id).emit("joinRoomSuccess",{
@@ -75,13 +75,21 @@ io.on('connection', (socket) => {
     });
 
     socket.on("outRoom",async (data)=>{
-        // console.log("outRoom",socketToRoom[data.roomIdx])
 
         let index = socketToRoom[data.roomIdx].findIndex((item) => item.socket == socket.id);
         console.log(index);
         socketToRoom[data.roomIdx].splice(index,1);
         socket.leave(data.roomIdx.toString())
-        // console.log(socketToRoom[data.roomIdx])
+        const room = new Room();
+        const chat = new Chat();
+        await room.isRoomCheck(data.roomIdx,data.userIdx,socket.id,"leave")
+        let chatList = await chat.chatList(data.roomIdx);
+        io.sockets.in(data.roomIdx.toString()).emit("getChatList",{
+            chatList : chatList
+        })
+        io.to(socket.id).emit("outRoomSuccess",{
+            roomIdx : data.roomIdx
+        })
 
     });
 
