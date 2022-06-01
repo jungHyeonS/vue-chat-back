@@ -18,6 +18,14 @@ exports.join = async function (req, res) {
     res.json(result);
 }
 
+//아이디 중복 검사
+exports.duplicate = async function(req,res){
+    let input = req.body;
+    const auth = new Auth();
+    let result = await auth.duplicateCheck(input);
+    res.json(result);
+}
+
 
 //로그인 컨트롤러
 exports.login = async function(req,res){

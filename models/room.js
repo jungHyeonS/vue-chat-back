@@ -47,12 +47,15 @@ class Room{
             let sqlIf = "";
             let param = [];
             if(roomName !== ""){
-                sqlIf += " and roomName like ?"
+                sqlIf += " and r.roomName like ?"
                 roomName = `%${roomName}%`
                 param.push(roomName)
             }
-
-            const sql = `select idx,roomName,createIdx,createDate from room where isDel = 'N' ${sqlIf}`
+            const sql = `select r.idx,r.roomName,r.createIdx,r.createDate ,count(riu.idx) as currentUser,
+            (select c.createDate from chat c
+            where c.roomIdx = r.idx  order by c.createDate desc limit 1) as lastChat from room r
+            left join roomIsUser riu on riu.roomIdx = r.idx 
+            where isDel = 'N' ${sqlIf} group by r.idx`
             mysql.query(sql,param,async (err,rows,fields)=>{
                 if(err){
                     reject(err)

@@ -8,6 +8,25 @@ class Auth {
 
     }
 
+
+    async duplicateCheck(params){
+        return new Promise((resolve,reject)=>{
+            const sql = "select COUNT(*) as cnt from user u where u.id = ?";
+            let param = [params.id];
+            mysql.query(sql,param,(err,rows,fields)=>{
+                if(err){
+                    reject(0)
+                }else{
+                    let result = {
+                        cnt : 0
+                    }
+                    result.cnt = rows[0].cnt
+                    resolve(result)
+                }
+            })
+        })
+    }
+
     /**
      * @description 유저 회원가입
      * @param {*} params 
