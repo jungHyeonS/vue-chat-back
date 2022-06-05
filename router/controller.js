@@ -1,4 +1,4 @@
-var Auth = require("../models/auth");
+let Auth = require("../models/auth");
 let Room = require("../models/room")
 let Chat = require("../models/chat")
 

@@ -9,6 +9,11 @@ class Auth {
     }
 
 
+    /**
+     * @description 아이디 중복 체크
+     * @param {*} params 
+     * @returns 
+     */
     async duplicateCheck(params){
         return new Promise((resolve,reject)=>{
             const sql = "select COUNT(*) as cnt from user u where u.id = ?";
@@ -68,7 +73,6 @@ class Auth {
                     if(err){
                         reject(err);
                     }else{
-                        // console.log(rows.length);
                         if(rows.length){
                             let hasspass = await encry.checkPassword(param.pass,rows[0].salt);
                             if(rows[0].password === hasspass){
